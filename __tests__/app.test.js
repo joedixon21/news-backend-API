@@ -46,3 +46,20 @@ describe("/api/topics", () => {
 			});
 	});
 });
+
+describe("/api/articles/:article_id", () => {
+	test("GET: 200 - responds with an article by its id", () => {
+		return request(app)
+			.get("/api/articles/3")
+			.expect(200)
+			.then(({ body }) => {
+				console.log(body, "test suite");
+				expect(body.article).toHaveProperty(
+					"title",
+					"Eight pug gifs that remind me of mitch"
+				);
+				expect(body.article).toHaveProperty("topic", "mitch");
+				expect(body.article).toHaveProperty("author", "icellusedkars");
+			});
+	});
+});
