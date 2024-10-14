@@ -23,7 +23,7 @@ describe("/api", () => {
 	});
 });
 
-describe("/api/topics", () => {
+describe("GET /api/topics", () => {
 	test("200 - responds with an array of topic objects with properties: slug and description", () => {
 		return request(app)
 			.get("/api/topics")

@@ -4,7 +4,7 @@ const app = express();
 
 app.get("/api/topics", getTopics);
 
-app.all("*", (request, response) => {
+app.all("*", (request, response, next) => {
 	response.status(404).send({ msg: "Path Not Found" });
 });
 
