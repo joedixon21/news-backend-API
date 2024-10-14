@@ -53,13 +53,20 @@ describe("/api/articles/:article_id", () => {
 			.get("/api/articles/3")
 			.expect(200)
 			.then(({ body }) => {
-				console.log(body, "test suite");
 				expect(body.article).toHaveProperty(
 					"title",
 					"Eight pug gifs that remind me of mitch"
 				);
 				expect(body.article).toHaveProperty("topic", "mitch");
 				expect(body.article).toHaveProperty("author", "icellusedkars");
+			});
+	});
+	test("GET: 404 - responds with 'Not Found' when attempting to access an article with a valid id that doesn't exist", () => {
+		return request(app)
+			.get("/api/articles/9999")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body.msg).toBe("Not Found");
 			});
 	});
 });

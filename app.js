@@ -16,4 +16,10 @@ app.all("*", (request, response, next) => {
 	response.status(404).send({ msg: "Path Not Found" });
 });
 
+app.use((err, request, response, next) => {
+	if (err.status) {
+		response.status(err.status).send({ msg: err.msg });
+	}
+});
+
 module.exports = app;
