@@ -46,3 +46,36 @@ describe("/api/topics", () => {
 			});
 	});
 });
+
+describe("/api/articles/:article_id", () => {
+	test("GET: 200 - responds with an article by its id", () => {
+		return request(app)
+			.get("/api/articles/3")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.article).toHaveProperty(
+					"title",
+					"Eight pug gifs that remind me of mitch"
+				);
+				expect(typeof body.article.created_at).toBe("string");
+				expect(body.article).toHaveProperty("topic", "mitch");
+				expect(body.article).toHaveProperty("author", "icellusedkars");
+			});
+	});
+	test("GET: 404 - responds with 'Not Found' when attempting to access an article with a valid id that doesn't exist", () => {
+		return request(app)
+			.get("/api/articles/9999")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body.msg).toBe("Not Found");
+			});
+	});
+	test("GET: 400 - responds with 'Bad Request' when attempting to access an article with an invalid id", () => {
+		return request(app)
+			.get("/api/articles/not-a-valid-id")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body.msg).toBe("Bad Request");
+			});
+	});
+});
