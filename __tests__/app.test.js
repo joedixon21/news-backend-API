@@ -57,6 +57,7 @@ describe("/api/articles/:article_id", () => {
 					"title",
 					"Eight pug gifs that remind me of mitch"
 				);
+				expect(typeof body.article.created_at).toBe("string");
 				expect(body.article).toHaveProperty("topic", "mitch");
 				expect(body.article).toHaveProperty("author", "icellusedkars");
 			});
