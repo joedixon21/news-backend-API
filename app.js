@@ -19,7 +19,7 @@ app.all("*", (request, response, next) => {
 app.use((err, request, response, next) => {
 	if (err.status) {
 		response.status(err.status).send({ msg: err.msg });
-	}
+	} else next(err);
 });
 
 module.exports = app;

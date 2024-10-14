@@ -69,4 +69,12 @@ describe("/api/articles/:article_id", () => {
 				expect(body.msg).toBe("Not Found");
 			});
 	});
+	test("GET: 400 - responds with 'Bad Request' when attempting to access an article with an invalid id", () => {
+		return request(app)
+			.get("/api/articles/not-a-valid-id")
+			.expect(400)
+			.then(({ body }) => {
+				expect(body.msg).toBe("Bad Request");
+			});
+	});
 });
