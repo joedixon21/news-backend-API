@@ -12,6 +12,17 @@ afterAll(() => {
 	db.end();
 });
 
+describe("/api", () => {
+	test("404 - responds with message of 'Path Not Found' when attempting to access a non-existent endpoint", () => {
+		return request(app)
+			.get("/api/chocolate")
+			.expect(404)
+			.then(({ body }) => {
+				expect(body.msg).toBe("Path Not Found");
+			});
+	});
+});
+
 describe("/api/topics", () => {
 	test("200 - responds with an array of topic objects with properties: slug and description", () => {
 		return request(app)
