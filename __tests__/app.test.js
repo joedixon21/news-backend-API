@@ -165,4 +165,12 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.comments).toHaveLength(0);
             });
     });
+    test("GET: 400 - responds with 'Bad Request' when attempting to access an article with an invalid id", () => {
+        return request(app)
+            .get("/api/articles/not-a-valid-id/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
 });
