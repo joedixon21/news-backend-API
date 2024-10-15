@@ -79,3 +79,14 @@ describe("/api/articles/:article_id", () => {
 			});
 	});
 });
+
+describe("/api/articles", () => {
+	test("GET: 200 - responds with an array of article objects with properties: author, title, article_id, topic, created_at, votes article_img_url and comment_count", () => {
+		return request(app)
+			.get("/api/articles")
+			.expect(200)
+			.then(({ body }) => {
+				expect(body.articles).toHaveLength(13);
+			});
+	});
+});
