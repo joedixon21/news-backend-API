@@ -138,4 +138,14 @@ describe("/api/articles/:article_id/comments", () => {
                 });
             });
     });
+    test("GET: 200 - responds with an array of comments with the most recent ones first", () => {
+        return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.comments).toBeSortedBy("created_at", {
+                    descending: true,
+                });
+            });
+    });
 });
