@@ -17,6 +17,10 @@ exports.fetchCommentsByArticleId = (article_id) => {
 };
 
 exports.createComment = (article_id, username, body) => {
+    if (!body || !username) {
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+    }
+
     return db
         .query(
             `

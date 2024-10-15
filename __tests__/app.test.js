@@ -205,4 +205,18 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.comment).toHaveProperty("author", "joed88");
             });
     });
+    test("POST: 400 - responds with 'Bad Request' when body does not contain correct fields", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "joed88",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("POST: 400 - responds with 'Bad Request' when body contains valid fields but value is invalid", () => {
+        return request(app).post();
+    });
 });
