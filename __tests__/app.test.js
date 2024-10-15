@@ -148,4 +148,21 @@ describe("/api/articles/:article_id/comments", () => {
                 });
             });
     });
+    test("GET: 404 - responds with 'Not Found' when attempting to access an array of comments with a valid article_id that doesn't exist in the database", () => {
+        return request(app)
+            .get("/api/articles/9999/comments")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
+    test("GET: 200 - responds with an empty array when passed an article_id that exists in the database but has no comments associated", () => {
+        return request(app)
+            .get("/api/articles/2/comments")
+            .expect(200)
+            .then(({ body }) => {
+                expect(Array.isArray(body.comments)).toBe(true);
+                expect(body.comments).toHaveLength(0);
+            });
+    });
 });
