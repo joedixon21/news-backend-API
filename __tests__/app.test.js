@@ -104,9 +104,18 @@ describe("/api/articles", () => {
 			.get("/api/articles")
 			.expect(200)
 			.then(({ body }) => {
-				console.log(body.articles);
 				expect(body.articles).toBeSortedBy("created_at", {
 					descending: true,
+				});
+			});
+	});
+	test("GET: 200 - articles objects do not have a body property", () => {
+		return request(app)
+			.get("/api/articles")
+			.expect(200)
+			.then(({ body }) => {
+				body.articles.forEach((article) => {
+					expect(article).not.toHaveProperty("body");
 				});
 			});
 	});
