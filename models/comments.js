@@ -15,3 +15,44 @@ exports.fetchCommentsByArticleId = (article_id) => {
             return rows;
         });
 };
+
+exports.createComment = (article_id, username, body) => {
+    return db
+        .query(
+            `
+        SELECT * FROM users
+        WHERE username = $1`,
+            [username]
+        )
+        .then(({ rows }) => {
+            if (rows.length === 0) {
+                return db
+                    .query(
+                        `
+                    INSERT INTO users (username, name, avatar_url)
+                    VALUES ($1, 'Joe', 'https://www.photoOfJoe.com')
+                    RETURNING *
+                `,
+                        [username]
+                    )
+                    .then(({ rows }) => {
+                        return rows[0];
+                    });
+            } else {
+                return rows[0];
+            }
+        })
+        .then(() => {
+            return db.query(
+                `
+            INSERT INTO comments (body, article_id, author, votes, created_at)
+            VALUES ($1, $2, $3, 0, NOW())
+            RETURNING *;
+            `,
+                [body, article_id, username]
+            );
+        })
+        .then(({ rows }) => {
+            return rows[0];
+        });
+};

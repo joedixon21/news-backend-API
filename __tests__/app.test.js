@@ -173,4 +173,36 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
+    test("POST: 201 - responds with posted comment from existing user", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.comment).toHaveProperty(
+                    "body",
+                    "This is an interesting article!"
+                );
+                expect(body.comment).toHaveProperty("author", "butter_bridge");
+            });
+    });
+    test("POST: 201 - responds with posted comment from a new user", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "joed88",
+                body: "This is an interesting article!",
+            })
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.comment).toHaveProperty(
+                    "body",
+                    "This is an interesting article!"
+                );
+                expect(body.comment).toHaveProperty("author", "joed88");
+            });
+    });
 });
