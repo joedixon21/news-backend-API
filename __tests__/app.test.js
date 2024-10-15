@@ -216,7 +216,4 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
-    test("POST: 400 - responds with 'Bad Request' when body contains valid fields but value is invalid", () => {
-        return request(app).post();
-    });
 });
