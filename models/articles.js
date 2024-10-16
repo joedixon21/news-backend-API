@@ -20,19 +20,33 @@ exports.fetchArticlesById = (article_id) => {
         });
 };
 
-exports.fetchArticles = () => {
-    return db
-        .query(
-            `
-		SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
+exports.fetchArticles = (sort_by = "created_at", order = "desc") => {
+    const allowedSortByVariables = [
+        "title",
+        "topic",
+        "author",
+        "body",
+        "created_at",
+        "votes",
+    ];
+    const allowedOrderVariables = ["asc", "desc"];
+    let queryStr = `
+        SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comment_id) AS INT) AS comment_count
 		FROM articles LEFT OUTER JOIN comments ON articles.article_id = comments.article_id
-		GROUP BY articles.article_id
-		ORDER BY articles.created_at DESC;
-	`
-        )
-        .then(({ rows }) => {
-            return rows;
-        });
+        GROUP BY articles.article_id
+    `;
+    if (
+        !allowedSortByVariables.includes(sort_by) ||
+        !allowedOrderVariables.includes(order)
+    ) {
+        return Promise.reject({ status: 400, msg: "Not a valid query" });
+    }
+
+    queryStr += ` ORDER BY articles.${sort_by} ${order}`;
+
+    return db.query(queryStr).then(({ rows }) => {
+        return rows;
+    });
 };
 
 exports.updateArticlesById = (article_id, inc_votes) => {
