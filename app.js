@@ -17,6 +17,7 @@ const {
     foreignKeyErrorHandle,
     invalidInputErrorHandle,
 } = require("./error-handling");
+const { getUsers } = require("./controllers/users.controllers");
 
 app.get("/api", (request, response) => {
     response.status(200).send({ endpoints });
@@ -35,6 +36,8 @@ app.use(express.json());
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticlesById);
+
+app.get("/api/users", getUsers);
 
 app.all("*", (request, response, next) => {
     response.status(404).send({ msg: "Path Not Found" });
