@@ -78,6 +78,72 @@ describe("/api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
+    test("PATCH: 200 - responds with article object with additional votes sent in request body", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                inc_votes: 20,
+            })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty("votes", 120);
+            });
+    });
+    test("PATCH: 200 - responds with article object with negative votes added", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                inc_votes: -20,
+            })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty("votes", 80);
+            });
+    });
+    test("PATCH: 400 - responds with 'Bad Request' when inc_votes is not a number", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                inc_votes: "pizza",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("PATCH: 400 - responds with 'Bad Request' when incorrect data fields are provided in request body", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                not_inc_votes: 20,
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("PATCH: 404 - responds with 'Not Found' when inc_votes is added to a valid but non-existent article", () => {
+        return request(app)
+            .patch("/api/articles/9999")
+            .send({
+                inc_votes: "20",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
+    test("PATCH: 400 - responds with 'Bad Request' when inc_votes is added to an invalid article_id", () => {
+        return request(app)
+            .patch("/api/articles/not-a-valid-id")
+            .send({
+                inc_votes: "20",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
 });
 
 describe("/api/articles", () => {

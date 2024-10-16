@@ -4,6 +4,7 @@ const { getTopics } = require("./controllers/topics.controllers");
 const {
     getArticlesById,
     getArticles,
+    patchArticlesById,
 } = require("./controllers/articles.controllers");
 const {
     getCommentsByArticleId,
@@ -13,7 +14,8 @@ const endpoints = require("./endpoints.json");
 const {
     customErrorHandle,
     ServerErrorHandle,
-    psqlErrorHandle,
+    foreignKeyErrorHandle,
+    invalidInputErrorHandle,
 } = require("./error-handling");
 
 app.get("/api", (request, response) => {
@@ -32,11 +34,14 @@ app.use(express.json());
 
 app.post("/api/articles/:article_id/comments", postComment);
 
+app.patch("/api/articles/:article_id", patchArticlesById);
+
 app.all("*", (request, response, next) => {
     response.status(404).send({ msg: "Path Not Found" });
 });
 
-app.use(psqlErrorHandle);
+app.use(invalidInputErrorHandle);
+app.use(foreignKeyErrorHandle);
 app.use(customErrorHandle);
 app.use(ServerErrorHandle);
 
