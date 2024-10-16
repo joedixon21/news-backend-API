@@ -7,9 +7,14 @@ const {
 } = require("./controllers/articles.controllers");
 const {
     getCommentsByArticleId,
+    postComment,
 } = require("./controllers/comments.controllers");
 const endpoints = require("./endpoints.json");
-const { customErrorHandle, ServerErrorHandle } = require("./error-handling");
+const {
+    customErrorHandle,
+    ServerErrorHandle,
+    psqlErrorHandle,
+} = require("./error-handling");
 
 app.get("/api", (request, response) => {
     response.status(200).send({ endpoints });
@@ -23,10 +28,15 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
+app.use(express.json());
+
+app.post("/api/articles/:article_id/comments", postComment);
+
 app.all("*", (request, response, next) => {
     response.status(404).send({ msg: "Path Not Found" });
 });
 
+app.use(psqlErrorHandle);
 app.use(customErrorHandle);
 app.use(ServerErrorHandle);
 

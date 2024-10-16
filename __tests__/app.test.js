@@ -165,4 +165,104 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.comments).toHaveLength(0);
             });
     });
+    test("GET: 400 - responds with 'Bad Request' when attempting to access an article with an invalid id", () => {
+        return request(app)
+            .get("/api/articles/not-a-valid-id/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("POST: 201 - responds with posted comment from existing user", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.comment).toHaveProperty(
+                    "body",
+                    "This is an interesting article!"
+                );
+                expect(body.comment).toHaveProperty("author", "butter_bridge");
+            });
+    });
+    test("POST: 201 - responds with posted comment from existing user when unnecessary properties are provided", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+                likesCats: true,
+            })
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.comment).toHaveProperty(
+                    "body",
+                    "This is an interesting article!"
+                );
+                expect(body.comment).toHaveProperty("author", "butter_bridge");
+            });
+    });
+    test("POST: 404 - responds with 'Not Found' when a user that doesn't exists attempts to post a comment", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "joed88",
+                body: "This is an interesting article!",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("User Not Found");
+            });
+    });
+    test("POST: 400 - responds with 'Bad Request' when body does not contain correct fields", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "joed88",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("POST: 400 - responds with 'Bad Request' when body contains correct fields but contents is invalid", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: [3, 4, 5],
+                body: { comment: "Hi!" },
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("POST: 404 - responds with 'Not Found' when attempting to post a comment to an article with a valid id that doesn't exist", () => {
+        return request(app)
+            .post("/api/articles/9999/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
+    test("POST: 400 - responds with 'Bad Request' when attempting to post a comment to an article with an invalid id", () => {
+        return request(app)
+            .post("/api/articles/not-a-valid-id/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
 });

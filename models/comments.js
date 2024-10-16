@@ -15,3 +15,27 @@ exports.fetchCommentsByArticleId = (article_id) => {
             return rows;
         });
 };
+
+exports.createComment = (article_id, username, body) => {
+    if (
+        !body ||
+        !username ||
+        typeof username !== "string" ||
+        typeof body !== "string"
+    ) {
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+    }
+
+    return db
+        .query(
+            `
+        INSERT INTO comments (body, article_id, author, votes, created_at)
+        VALUES ($1, $2, $3, 0, NOW())
+        RETURNING *;
+        `,
+            [body, article_id, username]
+        )
+        .then(({ rows }) => {
+            return rows[0];
+        });
+};
