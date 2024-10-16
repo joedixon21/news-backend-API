@@ -189,12 +189,13 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.comment).toHaveProperty("author", "butter_bridge");
             });
     });
-    test("POST: 201 - responds with posted comment from a new user on the specified article", () => {
+    test("POST: 201 - responds with posted comment from existing user when unnecessary properties are provided", () => {
         return request(app)
             .post("/api/articles/1/comments")
             .send({
-                username: "joed88",
+                username: "butter_bridge",
                 body: "This is an interesting article!",
+                likesCats: true,
             })
             .expect(201)
             .then(({ body }) => {
@@ -202,7 +203,19 @@ describe("/api/articles/:article_id/comments", () => {
                     "body",
                     "This is an interesting article!"
                 );
-                expect(body.comment).toHaveProperty("author", "joed88");
+                expect(body.comment).toHaveProperty("author", "butter_bridge");
+            });
+    });
+    test("POST: 404 - responds with 'Not Found' when a user that doesn't exists attempts to post a comment", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: "joed88",
+                body: "This is an interesting article!",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("User Not Found");
             });
     });
     test("POST: 400 - responds with 'Bad Request' when body does not contain correct fields", () => {
@@ -228,7 +241,28 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
-    // Add in functionality that checks if an article exists before they are able to comment and gives error if article doesn't exist
-    // ?404 - test when someone posts to a valid ID e.g. 99999 that doesnt exist
-    // ?400 - test when someone tries to post to an invalid ID e.g. not-an-article
+    test("POST: 404 - responds with 'Not Found' when attempting to post a comment to an article with a valid id that doesn't exist", () => {
+        return request(app)
+            .post("/api/articles/9999/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
+    test("POST: 400 - responds with 'Bad Request' when attempting to post a comment to an article with an invalid id", () => {
+        return request(app)
+            .post("/api/articles/not-a-valid-id/comments")
+            .send({
+                username: "butter_bridge",
+                body: "This is an interesting article!",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
 });

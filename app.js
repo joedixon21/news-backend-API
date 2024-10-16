@@ -10,7 +10,11 @@ const {
     postComment,
 } = require("./controllers/comments.controllers");
 const endpoints = require("./endpoints.json");
-const { customErrorHandle, ServerErrorHandle } = require("./error-handling");
+const {
+    customErrorHandle,
+    ServerErrorHandle,
+    psqlErrorHandle,
+} = require("./error-handling");
 
 app.get("/api", (request, response) => {
     response.status(200).send({ endpoints });
@@ -32,6 +36,7 @@ app.all("*", (request, response, next) => {
     response.status(404).send({ msg: "Path Not Found" });
 });
 
+app.use(psqlErrorHandle);
 app.use(customErrorHandle);
 app.use(ServerErrorHandle);
 
