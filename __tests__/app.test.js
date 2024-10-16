@@ -185,7 +185,7 @@ describe("/api/articles", () => {
                 });
             });
     });
-    test("200 - takes a sort_by query and responds with articles sorted by the given column name", () => {
+    test("GET: 200 - takes a sort_by query and responds with articles sorted by the given column name", () => {
         return request(app)
             .get("/api/articles?sort_by=votes")
             .expect(200)
@@ -195,9 +195,27 @@ describe("/api/articles", () => {
                 });
             });
     });
-    test("400 - responds with 'Not a valid query' when request to sort by invalid query", () => {
+    test("GET: 400 - responds with 'Not a valid query' when request to sort by invalid query", () => {
         return request(app)
             .get("/api/articles?sort_by=article_img_url")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not a valid query");
+            });
+    });
+    test("GET: 200 - responds with articles in order based on order query (defaults to descending)", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes&order=asc")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("votes", {
+                    descending: false,
+                });
+            });
+    });
+    test("GET: 400 - responds with 'Not a valid query' when request to order is invalid (i.e. not asc or desc)", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes&order=alphabetically")
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe("Not a valid query");
