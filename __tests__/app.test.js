@@ -165,7 +165,7 @@ describe("/api/articles", () => {
                 });
             });
     });
-    test("GET: 200 - responds with an array of article objects sorted by date in descending order", () => {
+    test("GET: 200 - responds with an array of article objects sorted by date by default in descending order", () => {
         return request(app)
             .get("/api/articles")
             .expect(200)
@@ -183,6 +183,24 @@ describe("/api/articles", () => {
                 body.articles.forEach((article) => {
                     expect(article).not.toHaveProperty("body");
                 });
+            });
+    });
+    test("200 - takes a sort_by query and responds with articles sorted by the given column name", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("votes", {
+                    descending: true,
+                });
+            });
+    });
+    test("400 - responds with 'Not a valid query' when request to sort by invalid query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=article_img_url")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not a valid query");
             });
     });
 });

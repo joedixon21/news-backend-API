@@ -16,7 +16,8 @@ exports.getArticlesById = (request, response, next) => {
 };
 
 exports.getArticles = (request, response, next) => {
-    fetchArticles()
+    const { sort_by } = request.query;
+    fetchArticles(sort_by)
         .then((articles) => {
             response.status(200).send({ articles });
         })
