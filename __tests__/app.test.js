@@ -189,7 +189,7 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.comment).toHaveProperty("author", "butter_bridge");
             });
     });
-    test("POST: 201 - responds with posted comment from a new user", () => {
+    test("POST: 201 - responds with posted comment from a new user on the specified article", () => {
         return request(app)
             .post("/api/articles/1/comments")
             .send({
@@ -216,4 +216,19 @@ describe("/api/articles/:article_id/comments", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
+    test("POST: 400 - responds with 'Bad Request' when body contains correct fields but contents is invalid", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                username: [3, 4, 5],
+                body: { comment: "Hi!" },
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    // Add in functionality that checks if an article exists before they are able to comment and gives error if article doesn't exist
+    // ?404 - test when someone posts to a valid ID e.g. 99999 that doesnt exist
+    // ?400 - test when someone tries to post to an invalid ID e.g. not-an-article
 });
