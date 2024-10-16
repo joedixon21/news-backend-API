@@ -78,6 +78,17 @@ describe("/api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
+    test("PATCH: 200 - responds with article object with additional votes sent in request body", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                inc_votes: 20,
+            })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty("votes", 120);
+            });
+    });
 });
 
 describe("/api/articles", () => {
