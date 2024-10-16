@@ -14,7 +14,8 @@ const endpoints = require("./endpoints.json");
 const {
     customErrorHandle,
     ServerErrorHandle,
-    psqlErrorHandle,
+    foreignKeyErrorHandle,
+    invalidInputErrorHandle,
 } = require("./error-handling");
 
 app.get("/api", (request, response) => {
@@ -39,7 +40,8 @@ app.all("*", (request, response, next) => {
     response.status(404).send({ msg: "Path Not Found" });
 });
 
-app.use(psqlErrorHandle);
+app.use(invalidInputErrorHandle);
+app.use(foreignKeyErrorHandle);
 app.use(customErrorHandle);
 app.use(ServerErrorHandle);
 

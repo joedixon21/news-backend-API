@@ -89,6 +89,17 @@ describe("/api/articles/:article_id", () => {
                 expect(body.article).toHaveProperty("votes", 120);
             });
     });
+    test("PATCH: 400 - responds with 'Bad Request' when inc_votes is not a number", () => {
+        return request(app)
+            .patch("/api/articles/1")
+            .send({
+                inc_votes: "pizza",
+            })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
 });
 
 describe("/api/articles", () => {
