@@ -100,6 +100,17 @@ describe("/api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
+    test("PATCH: 404 - responds with 'Not Found' when inc_votes is added to a valid but non-existent article", () => {
+        return request(app)
+            .patch("/api/articles/9999")
+            .send({
+                inc_votes: "20",
+            })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
 });
 
 describe("/api/articles", () => {
