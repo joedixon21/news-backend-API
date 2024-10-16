@@ -334,7 +334,15 @@ describe("/api/articles/:article_id/comments", () => {
 });
 
 describe("/api/comments/:comment_id", () => {
-    test("DELETE: 204 - responds with 'No Content' when a given comment is deleted", () => {
+    test("DELETE: 204 - status when a given comment is deleted", () => {
         return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("DELETE: 404 - responds with 'Not Found' when attempting to delete a non-existent comment with a valid comment_id", () => {
+        return request(app)
+            .delete("/api/comments/9999")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
     });
 });
