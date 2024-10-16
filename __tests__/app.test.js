@@ -332,3 +332,9 @@ describe("/api/articles/:article_id/comments", () => {
             });
     });
 });
+
+describe("/api/comments/:comment_id", () => {
+    test("DELETE: 204 - responds with 'No Content' when a given comment is deleted", () => {
+        return request(app).delete("/api/comments/1").expect(204);
+    });
+});
