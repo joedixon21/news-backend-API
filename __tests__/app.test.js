@@ -111,7 +111,7 @@ describe("/api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
-    test("PATCH: 400 - responds with 'Bad Request' when incorrect data fields are provided in request body", () => {
+    test("PATCH: 400 - responds with 'Bad Request' when inc_votes is not provided in request body", () => {
         return request(app)
             .patch("/api/articles/1")
             .send({
@@ -219,6 +219,32 @@ describe("/api/articles", () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe("Not a valid query");
+            });
+    });
+    test("GET: 200 - takes a topic query and responds with the articles by the topic value specified", () => {
+        return request(app)
+            .get("/api/articles?topic=cats")
+            .expect(200)
+            .then(({ body }) => {
+                body.articles.forEach((article) => {
+                    expect(article.topic).toBe("cats");
+                });
+            });
+    });
+    test("GET: 200 - topic query is optional and when not provided will default to receiving all articles", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(13);
+            });
+    });
+    test("GET: 404 - responds with 'Not Found' when a topic that doesn't exist is requested", () => {
+        return request(app)
+            .get("/api/articles?topic=pizza")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
             });
     });
 });
