@@ -62,6 +62,14 @@ describe("/api/articles/:article_id", () => {
                 expect(body.article).toHaveProperty("author", "icellusedkars");
             });
     });
+    test("GET: 200 - responds with an article by its id with a comment_count property", () => {
+        return request(app)
+            .get("/api/articles/3")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty("comment_count");
+            });
+    });
     test("GET: 404 - responds with 'Not Found' when attempting to access an article with a valid id that doesn't exist", () => {
         return request(app)
             .get("/api/articles/9999")
@@ -210,6 +218,56 @@ describe("/api/articles", () => {
             .then(({ body }) => {
                 expect(body.articles).toBeSortedBy("votes", {
                     descending: false,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by title when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=title")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("title", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by topic when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=topic")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("topic", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by author when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=author")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("author", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by created_at when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=created_at")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("created_at", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by votes when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("votes", {
+                    descending: true,
                 });
             });
     });
