@@ -62,12 +62,13 @@ describe("/api/articles/:article_id", () => {
                 expect(body.article).toHaveProperty("author", "icellusedkars");
             });
     });
-    test("GET: 200 - responds with an article by its id with a comment_count property", () => {
+    test("GET: 200 - responds with an article by its id with a comment_count property of correct value", () => {
         return request(app)
             .get("/api/articles/3")
             .expect(200)
             .then(({ body }) => {
                 expect(body.article).toHaveProperty("comment_count");
+                expect(body.article.comment_count).toBe(2);
             });
     });
     test("GET: 404 - responds with 'Not Found' when attempting to access an article with a valid id that doesn't exist", () => {
@@ -203,12 +204,12 @@ describe("/api/articles", () => {
                 });
             });
     });
-    test("GET: 400 - responds with 'Not a valid query' when request to sort by invalid query", () => {
+    test("GET: 400 - responds with 'Bad Request' when request to sort by invalid query", () => {
         return request(app)
             .get("/api/articles?sort_by=article_img_url")
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe("Not a valid query");
+                expect(body.msg).toBe("Bad Request");
             });
     });
     test("GET: 200 - responds with articles in order based on order query (defaults to descending)", () => {
@@ -271,12 +272,12 @@ describe("/api/articles", () => {
                 });
             });
     });
-    test("GET: 400 - responds with 'Not a valid query' when request to order is invalid (i.e. not asc or desc)", () => {
+    test("GET: 400 - responds with 'Bad Request' when request to order is invalid (i.e. not asc or desc)", () => {
         return request(app)
             .get("/api/articles?sort_by=votes&order=alphabetically")
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe("Not a valid query");
+                expect(body.msg).toBe("Bad Request");
             });
     });
     test("GET: 200 - takes a topic query and responds with the articles by the topic value specified", () => {
@@ -284,6 +285,7 @@ describe("/api/articles", () => {
             .get("/api/articles?topic=cats")
             .expect(200)
             .then(({ body }) => {
+                expect(body.articles).toHaveLength(1);
                 body.articles.forEach((article) => {
                     expect(article.topic).toBe("cats");
                 });
@@ -297,9 +299,17 @@ describe("/api/articles", () => {
                 expect(body.articles).toHaveLength(13);
             });
     });
-    test("GET: 404 - responds with 'Not Found' when a topic that doesn't exist is requested", () => {
+    test("GET: 400 - responds with 'Bad Request' when a topic that doesn't exist and is invalid is requested", () => {
         return request(app)
-            .get("/api/articles?topic=pizza")
+            .get("/api/articles?topic=not-a-valid-topic")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Bad Request");
+            });
+    });
+    test("GET: 404 - responds with 'Not Found' when a valid topic that has no associated articles is requested", () => {
+        return request(app)
+            .get("/api/articles?topic=paper")
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).toBe("Not Found");

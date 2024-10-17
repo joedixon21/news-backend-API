@@ -41,7 +41,7 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
         !allowedSortByVariables.includes(sort_by) ||
         !allowedOrderVariables.includes(order)
     ) {
-        return Promise.reject({ status: 400, msg: "Not a valid query" });
+        return Promise.reject({ status: 400, msg: "Bad Request" });
     }
 
     let queryValues = [];
@@ -56,9 +56,6 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
     queryStr += ` ORDER BY articles.${sort_by} ${order}`;
 
     return db.query(queryStr, queryValues).then(({ rows }) => {
-        if (rows.length === 0 && topic) {
-            return Promise.reject({ status: 404, msg: "Not Found" });
-        }
         return rows;
     });
 };

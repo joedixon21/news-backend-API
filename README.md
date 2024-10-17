@@ -1,14 +1,87 @@
 # Northcoders News API
 
-## Environment Variables set-up
+## Summary of project:
 
-For anyone who wishes to clone your project and run it locally, you must set up the environment variables as follows:
+This project is a RESTful API with the purpose of mimicking a real-world backend for a news platform (such as Reddit). It allows users to interact with the articles in a dynamic way. This information will be provided to the front end architecture in a follow-up project.
 
--   env.test file created with "PGDATABASE=nc_news_test"
--   env.development file created with "PGDATABASE=nc_news"
+The database is PostgreSQL and is interacted with using node-postgres.
 
-These files will be included in the .gitignore file meaning they will not be pushed to GitHub (important if the databses are sensitive and not to be shared publicly).
+The hosted version is available [here](https://news-backend-api-r7r9.onrender.com).
+
+## Set-up instructions
+
+### Minimum versions required:
+
+-   node.js v22.2.0
+-   (PostgreSQL) 14.12 (Homebrew)
+
+### Cloning the repo:
+
+Run the following in the terminal:
+
+```bash
+git clone https://github.com/joedixon21/news-backend-API
+cd nc-news-api # replace filename with where repo is saved locally
+```
+
+### Dependencies to install:
+
+Dependencies to install for this project:
+
+-   Jest
+    -   Jest-sorted
+-   PostgreSQL
+    -   pg-format
+-   Nodemon
+-   Supertest
+-   Dotenv
+-   Express
+
+```bash
+npm install -D jest
+npm install -D jest-sorted
+npm install -D pg-format
+npm install -D nodemon
+npm install -D supertest
+npm install pg
+npm install dotenv
+npm install express
+```
+
+### Seeding the data:
+
+Navigate to the root of the project directory.
+
+Run the following scripts in order to set up the database and seed the data:
+
+```bash
+npm run setup-dbs
+npm run seed
+```
+
+### Running the tests:
+
+Run the following using Jest in order to run the tests:
+
+```bash
+npm t app.test.js
+```
+
+### Environmental variables:
+
+Run the following in the terminal:
+
+```bash
+echo "PGDATABASE=nc_news_test" > .env.test
+echo "PGDATABASE=nc_news" > .env.development
+```
+
+Ensure that the .gitignore file contains the node_modules folder and .env file so that sensitive data is not later pushed to GitHub publicly:
+
+```bash
+echo -e "node_modules\n.env.\*" > .gitignore
+```
 
 ---
 
-This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
+This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/).

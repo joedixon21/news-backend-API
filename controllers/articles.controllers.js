@@ -3,6 +3,7 @@ const {
     fetchArticles,
     updateArticlesById,
 } = require("../models/articles");
+const { fetchTopics, fetchTopicsByTopic } = require("../models/topics");
 
 exports.getArticlesById = (request, response, next) => {
     const { article_id } = request.params;
@@ -17,8 +18,15 @@ exports.getArticlesById = (request, response, next) => {
 
 exports.getArticles = (request, response, next) => {
     const { sort_by, order, topic } = request.query;
-    fetchArticles(sort_by, order, topic)
+
+    fetchTopicsByTopic(topic)
+        .then(() => {
+            return fetchArticles(sort_by, order, topic);
+        })
         .then((articles) => {
+            if (articles.length === 0) {
+                return Promise.reject({ status: 404, msg: "Not Found" });
+            }
             response.status(200).send({ articles });
         })
         .catch((err) => {
