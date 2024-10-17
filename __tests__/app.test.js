@@ -221,6 +221,32 @@ describe("/api/articles", () => {
                 expect(body.msg).toBe("Not a valid query");
             });
     });
+    test("GET: 200 - takes a topic query and responds with the articles by the topic value specified", () => {
+        return request(app)
+            .get("/api/articles?topic=cats")
+            .expect(200)
+            .then(({ body }) => {
+                body.articles.forEach((article) => {
+                    expect(article.topic).toBe("cats");
+                });
+            });
+    });
+    test("GET: 200 - topic query is optional and when not provided will default to receiving all articles", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(13);
+            });
+    });
+    test("GET: 404 - responds with 'Not Found' when a topic that doesn't exist is requested", () => {
+        return request(app)
+            .get("/api/articles?topic=pizza")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Not Found");
+            });
+    });
 });
 
 describe("/api/articles/:article_id/comments", () => {
