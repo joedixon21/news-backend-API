@@ -62,6 +62,14 @@ describe("/api/articles/:article_id", () => {
                 expect(body.article).toHaveProperty("author", "icellusedkars");
             });
     });
+    test("GET: 200 - responds with an article by its id with a comment_count property", () => {
+        return request(app)
+            .get("/api/articles/3")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty("comment_count");
+            });
+    });
     test("GET: 404 - responds with 'Not Found' when attempting to access an article with a valid id that doesn't exist", () => {
         return request(app)
             .get("/api/articles/9999")
