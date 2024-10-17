@@ -111,7 +111,7 @@ describe("/api/articles/:article_id", () => {
                 expect(body.msg).toBe("Bad Request");
             });
     });
-    test("PATCH: 400 - responds with 'Bad Request' when incorrect data fields are provided in request body", () => {
+    test("PATCH: 400 - responds with 'Bad Request' when inc_votes is not provided in request body", () => {
         return request(app)
             .patch("/api/articles/1")
             .send({
