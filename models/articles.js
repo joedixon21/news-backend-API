@@ -25,7 +25,6 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
         "title",
         "topic",
         "author",
-        "body",
         "created_at",
         "votes",
     ];

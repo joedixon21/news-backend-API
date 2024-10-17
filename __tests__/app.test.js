@@ -213,6 +213,56 @@ describe("/api/articles", () => {
                 });
             });
     });
+    test("GET: 200 - responds with articles sorted by title when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=title")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("title", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by topic when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=topic")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("topic", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by author when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=author")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("author", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by created_at when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=created_at")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("created_at", {
+                    descending: true,
+                });
+            });
+    });
+    test("GET: 200 - responds with articles sorted by votes when requested as query", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("votes", {
+                    descending: true,
+                });
+            });
+    });
     test("GET: 400 - responds with 'Not a valid query' when request to order is invalid (i.e. not asc or desc)", () => {
         return request(app)
             .get("/api/articles?sort_by=votes&order=alphabetically")
