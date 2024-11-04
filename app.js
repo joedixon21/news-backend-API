@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const { getTopics } = require("./controllers/topics.controllers");
 const {
     getArticlesById,
@@ -19,6 +20,8 @@ const {
     invalidInputErrorHandle,
 } = require("./error-handling");
 const { getUsers } = require("./controllers/users.controllers");
+
+app.use(cors());
 
 app.get("/api", (request, response) => {
     response.status(200).send({ endpoints });
